@@ -1,0 +1,28 @@
+#install.packages("leaflet")
+library(leaflet)
+library(shiny)
+library(httr)
+library(jsonlite)
+
+source("accessToken.R")
+
+access.code
+
+response <-GET ("https://api.yelp.com/v3/businesses/search?term=delis&latitude=37.786882&longitude=-122.399972", add_headers(Authorization = access.code))
+body <- fromJSON(content(response, "text"))    
+data <- body$businesses
+coordinates <- data$coordinates
+coordinates$longitude
+
+View(body$businesses)
+typeof(data)
+
+m <- leaflet() %>%
+   addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng= coordinates$longitude, lat= coordinates$latitude, popup= paste(data$name, "<br>",
+                                                                                 "Price:", data$price,"<br>",
+                                                                                 "Rating:", data$rating))
+ m
+ 
+
+
